@@ -19,6 +19,18 @@ Please see [INSTALLING.md](INSTALLING.md) for details on how to setup this drive
 - build-essential
 - python3-pyroute2
 - python3-configargparse
+- dkms (optional, for automatic rebuilds on kernel updates)
+
+### DKMS
+
+Use the repo helper to register the current checkout with DKMS:
+
+- `make dkms-install`
+- `make dkms-status`
+- `make dkms-remove`
+
+The DKMS package version is derived from the current git revision and gets a
+`-dirty` suffix when the working tree has uncommitted changes.
 
 ## Status
 

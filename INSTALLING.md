@@ -49,35 +49,31 @@ Using DKMS (https://wiki.archlinux.org/title/Dynamic_Kernel_Module_Support) allo
 DKMS also has many other features, like the auto-generation of `.deb` for a particular kernel. See `man dkms` for more.
 
 ## Compiling xmm7360.ko with DKMS
-The following steps replaces the commands from `Installing/Ubuntu 20.04`, up to and including `make && make load`. **Do not run `lte setup`.**
+The following steps replace the manual `make && make load` flow. **Do not run `lte setup`.**
 
-First, install DKMS and other dependencies:
+First, install DKMS and your distro's kernel headers.
+
+Ubuntu/Debian:
 ```bash
-sudo apt install dkms
-sudo apt install build-essential python3-pyroute2 python3-configargparse git
+sudo apt install dkms build-essential python3-pyroute2 python3-configargparse git
 ```
 
-Then, install the source code to `/usr/src/`:
+Arch/Manjaro:
 ```bash
-TMP=$(mktemp -d)
-cd $TMP
-
-# Clone the Repository
-git clone https://github.com/xmm7360/xmm7360-pci.git 
-cd xmm7360-pci
-## For a particular branch/commit, run 'git checkout <REF>' here
-
-# Feed Commit ID as Package Version to dkms.conf
-COMMIT_ID=$(git rev-parse HEAD)
-sed "s/COMMIT_ID_VERSION/$COMMIT_ID/g" dkms.tmpl.conf > dkms.conf
-
-# Install in /usr/src
-sudo cp -r ./ /usr/src/xmm7360-pci-$COMMIT_ID/
+sudo pacman -S --needed dkms base-devel python-pyroute2 python-configargparse <matching-kernel-headers>
 ```
 
-Now, you can use DKMS to automatically build and sign the kernel module for the curent kernel with one simple command:
+Then register the current checkout with DKMS:
 ```bash
-sudo dkms install xmm7360-pci/$COMMIT_ID
+make dkms-install
+```
+
+This copies the current source tree into `/usr/src`, generates `dkms.conf`
+from `dkms.tmpl.conf`, and runs `dkms install` for the derived package version.
+
+You can inspect the installed versions with:
+```bash
+make dkms-status
 ```
 
 You can now manually load the kernel module with:

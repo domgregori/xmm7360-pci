@@ -19,6 +19,15 @@ load:
 	-sudo /sbin/rmmod xmm7360
 	sudo /sbin/insmod xmm7360.ko
 
+dkms-install:
+	./scripts/dkms.sh install
+
+dkms-remove:
+	./scripts/dkms.sh remove
+
+dkms-status:
+	./scripts/dkms.sh status
+
 unload:
 	sudo /sbin/rmmod xmm7360
 
